@@ -125,3 +125,49 @@ export const termsOfService = [
   "No refunds. The service is free.",
   "Please stop treating him like AWS. He is a person. Mostly.",
 ] as const;
+
+export const naeemResponses = {
+  flirt: [
+    "I was going to play it cool, but then you showed up.",
+    "You have the kind of smile that makes a reply feel urgent.",
+    "I think my favorite notification might be your name.",
+    "You make being distracted feel completely reasonable.",
+    "I had a clever line ready, but you are more interesting than the line.",
+    "If charm were bandwidth, you would be using the whole network.",
+    "You somehow make an ordinary conversation feel like the best part of my day.",
+    "I do not need directions, but I would still follow your lead.",
+    "You are dangerously easy to keep talking to.",
+    "My schedule was full until you became the priority request.",
+    "You are the reason small talk keeps turning into long conversations.",
+    "I would offer you my best joke, but your laugh is already the better part.",
+    "You make confidence look unfairly good.",
+    "I am trying to focus, and then there is you being memorable again.",
+    "If this conversation had an uptime score, I would keep it at one hundred percent.",
+    "You are giving main-character energy, and I am not arguing with the casting.",
+    "I did not believe in perfect timing until your message arrived.",
+    "Talking to you feels suspiciously like winning.",
+    "You could make even a loading screen worth waiting through.",
+    "I came here with a line and stayed because I like your vibe.",
+  ],
+  joke: [
+    "Why did Naeem bring a charger to dinner? He heard the conversation needed more energy.",
+    "Naeem tried to organize his thoughts. The thoughts declined the meeting invite.",
+    "My sleep schedule and I are in a long-distance relationship.",
+    "I started a productivity routine. We have agreed to see other people.",
+    "Naeem does not miss deadlines. He gives them space to grow.",
+    "Why was the phone calm? It had finally found its inner airplane mode.",
+    "I asked my brain for one quiet minute. It opened twelve new tabs.",
+    "The snack drawer is not empty. It is experiencing a temporary inventory outage.",
+    "Naeem installed common sense, but the free trial expired.",
+    "My motivation is fully remote and rarely joins the call.",
+  ],
+  busy: [
+    "I am busy right now, but your message is safely at the top of my queue.",
+    "Currently occupied. I will return with a better reply than a rushed one.",
+    "I saw your message. My schedule is the problem, not you.",
+    "Naeem is temporarily unavailable and pretending this is planned maintenance.",
+    "I am in the middle of something. Give me a little time and I will be back.",
+  ],
+} as const;
+
+export type NaeemResponseMode = keyof typeof naeemResponses;
