@@ -113,6 +113,7 @@ export const naeemProfile = [
 export const navLinks = [
   { label: "Product", href: "#product" },
   { label: "API", href: "#api" },
+  { label: "Play", href: "#playground" },
   { label: "Plans", href: "#pricing" },
   { label: "Docs", href: "#docs" },
   { label: "Status", href: "#status" },

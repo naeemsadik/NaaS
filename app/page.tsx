@@ -1,6 +1,7 @@
 import HeroSection from "@/components/sections/HeroSection";
 import WhatIsNaas from "@/components/sections/WhatIsNaas";
 import NaeemApi from "@/components/sections/NaeemApi";
+import NaeemPlayground from "@/components/sections/NaeemPlayground";
 import PricingPlans from "@/components/sections/PricingPlans";
 import FeaturesGrid from "@/components/sections/FeaturesGrid";
 import PersonalityDashboard from "@/components/sections/PersonalityDashboard";
@@ -24,6 +25,7 @@ export default function Home() {
         <HeroSection />
         <WhatIsNaas />
         <NaeemApi />
+        <NaeemPlayground />
         <PricingPlans />
         <FeaturesGrid />
         <PersonalityDashboard />
@@ -41,4 +43,3 @@ export default function Home() {
     </>
   );
 }
-
