@@ -170,5 +170,3 @@ export const naeemResponses = {
     "I am in the middle of something. Give me a little time and I will be back.",
   ],
 } as const;
-
-export type NaeemResponseMode = keyof typeof naeemResponses;
