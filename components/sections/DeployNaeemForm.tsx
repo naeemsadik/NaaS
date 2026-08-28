@@ -1,200 +1,125 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { deployRequirements, urgencyLevels, deploymentSteps } from "@/lib/constants";
-import { Rocket, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, BellRing, Check, CheckCircle2, Coffee, LoaderCircle, MessageCircleQuestion, Send, Siren } from "lucide-react";
+import { deployRequirements, deploymentSteps, urgencyLevels } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+
+const iconMap = { Coffee, MessageCircleQuestion, BellRing, Siren };
 
 export default function DeployNaeemForm() {
   const [step, setStep] = useState(0);
-  const [selectedReqs, setSelectedReqs] = useState<string[]>([]);
-  const [selectedUrgency, setSelectedUrgency] = useState<string | null>(null);
-  const [isDeploying, setIsDeploying] = useState(false);
-  const [deployStep, setDeployStep] = useState(-1);
+  const [requirements, setRequirements] = useState<string[]>([]);
+  const [urgency, setUrgency] = useState("");
+  const [deployIndex, setDeployIndex] = useState(-1);
+  const [complete, setComplete] = useState(false);
 
-  const handleReqToggle = (req: string) => {
-    setSelectedReqs((prev) =>
-      prev.includes(req) ? prev.filter((r) => r !== req) : [...prev, req]
-    );
-  };
+  function toggleRequirement(requirement: string) {
+    setRequirements((current) => current.includes(requirement) ? current.filter((item) => item !== requirement) : [...current, requirement]);
+  }
 
-  const handleDeploy = async () => {
-    setIsDeploying(true);
-    for (let i = 0; i < deploymentSteps.length; i++) {
-      setDeployStep(i);
-      await new Promise((resolve) => setTimeout(resolve, 800));
+  async function deploy() {
+    setStep(3);
+    for (let index = 0; index < deploymentSteps.length; index += 1) {
+      setDeployIndex(index);
+      await new Promise((resolve) => window.setTimeout(resolve, 520));
     }
-    setDeployStep(deploymentSteps.length);
-  };
+    setComplete(true);
+  }
+
+  function reset() {
+    setStep(0);
+    setRequirements([]);
+    setUrgency("");
+    setDeployIndex(-1);
+    setComplete(false);
+  }
 
   return (
-    <section id="deploy" className="py-20 px-4 bg-cream">
-      <div className="max-w-xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-10 flex items-center justify-center gap-3">
-          Deploy Naeem <Rocket className="text-pink-primary" size={36} />
-        </h2>
+    <section id="deploy" className="section-space relative overflow-hidden bg-[radial-gradient(circle_at_80%_12%,rgba(115,87,255,0.42),transparent_28%),linear-gradient(145deg,#140f2d,#201649)] text-white">
+      <div className="site-container grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
+        <div className="lg:sticky lg:top-28">
+          <span className="eyebrow !text-violet-soft">Request console</span>
+          <h2 className="section-title">Deploy Naeem.</h2>
+          <p className="section-copy mt-6 !text-white/52">Tell the system what kind of human support you need. No personal data, payment details, or actual deployment required.</p>
+          <div className="mt-9 space-y-3 font-mono text-xs text-white/42">
+            {["Select support", "Set urgency", "Confirm request"].map((label, index) => (
+              <div key={label} className="flex items-center gap-3"><span className={cn("grid size-6 place-items-center rounded-full border text-[0.6rem]", step >= index ? "border-mint bg-mint text-ink" : "border-white/18")}>{step > index ? <Check className="size-3" /> : index + 1}</span><span className={step >= index ? "text-white/78" : ""}>{label}</span></div>
+            ))}
+          </div>
+        </div>
 
-        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-xl min-h-[400px] relative overflow-hidden">
-          <AnimatePresence mode="wait">
-            {!isDeploying && step === 0 && (
-              <motion.div
-                key="step0"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-semibold mb-4">What do you require?</h3>
-                <div className="space-y-3">
-                  {deployRequirements.map((req) => {
-                    const isSelected = selectedReqs.includes(req);
+        <div className="min-h-[34rem] overflow-hidden rounded-[2rem] border-2 border-white bg-white text-ink shadow-[0.8rem_0.8rem_0_#ff4f9a]">
+          <div className="flex items-center justify-between border-b-2 border-ink bg-amber px-6 py-4 sm:px-8"><span className="mono-label text-ink/58">deployment.request</span><span className="rounded-full border-2 border-ink bg-white px-3 py-1 font-mono text-xs font-bold text-violet">{Math.min(step + 1, 3)}/3</span></div>
+          <div className="p-6 sm:p-8 lg:p-10">
+            {step === 0 && (
+              <div>
+                <h3 className="font-display text-3xl font-bold tracking-[-0.04em]">What do you need?</h3>
+                <p className="mt-2 text-sm text-ink/48">Select everything that applies. The system can multitask.</p>
+                <fieldset className="mt-7 grid gap-3 sm:grid-cols-2">
+                  <legend className="sr-only">Support requirements</legend>
+                  {deployRequirements.map((requirement) => {
+                    const selected = requirements.includes(requirement);
                     return (
-                      <div
-                        key={req}
-                        onClick={() => handleReqToggle(req)}
-                        className={cn(
-                          "cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 flex items-center gap-3",
-                          isSelected
-                            ? "bg-pink-primary/10 border-pink-primary"
-                            : "bg-gray-50 border-gray-100 hover:border-pink-primary/30"
-                        )}
-                      >
-                        <div
-                          className={cn(
-                            "w-6 h-6 rounded-md flex items-center justify-center border-2",
-                            isSelected ? "bg-pink-primary border-pink-primary text-white" : "border-gray-300 bg-white"
-                          )}
-                        >
-                          {isSelected && <Check size={16} />}
-                        </div>
-                        <span className="font-medium">{req}</span>
-                      </div>
+                      <label key={requirement} className={cn("flex min-h-20 cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors", selected ? "border-violet bg-violet/7" : "border-ink/9 bg-paper hover:border-violet/30")}>
+                        <input type="checkbox" className="sr-only" checked={selected} onChange={() => toggleRequirement(requirement)} />
+                        <span className={cn("mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border", selected ? "border-violet bg-violet text-white" : "border-ink/18 bg-white")}>{selected && <Check className="size-3" />}</span>
+                        <span className="text-sm font-semibold leading-5">{requirement}</span>
+                      </label>
                     );
                   })}
-                </div>
-                <div className="flex justify-end pt-4">
-                  <button
-                    disabled={selectedReqs.length === 0}
-                    onClick={() => setStep(1)}
-                    className="flex items-center gap-2 px-6 py-3 bg-pink-primary text-white rounded-full font-semibold hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Next <ChevronRight size={20} />
-                  </button>
-                </div>
-              </motion.div>
+                </fieldset>
+                <div className="mt-8 flex justify-end"><button type="button" className="button-primary" disabled={!requirements.length} onClick={() => setStep(1)}>Continue <ArrowRight className="size-4" /></button></div>
+              </div>
             )}
 
-            {!isDeploying && step === 1 && (
-              <motion.div
-                key="step1"
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                className="space-y-6"
-              >
-                <h3 className="text-2xl font-semibold mb-4">Urgency Level</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {step === 1 && (
+              <div>
+                <h3 className="font-display text-3xl font-bold tracking-[-0.04em]">How urgent is it?</h3>
+                <p className="mt-2 text-sm text-ink/48">Be honest. The queue manager is very judgmental.</p>
+                <fieldset className="mt-7 grid gap-3 sm:grid-cols-2">
+                  <legend className="sr-only">Urgency level</legend>
                   {urgencyLevels.map((level) => {
-                    const isSelected = selectedUrgency === level.label;
+                    const selected = urgency === level.label;
+                    const Icon = iconMap[level.icon as keyof typeof iconMap];
                     return (
-                      <div
-                        key={level.label}
-                        onClick={() => setSelectedUrgency(level.label)}
-                        className={cn(
-                          "cursor-pointer p-4 rounded-xl border-2 transition-all duration-200 text-center flex flex-col items-center justify-center gap-2",
-                          isSelected
-                            ? "bg-pink-primary/10 ring-2 ring-pink-primary border-transparent scale-105"
-                            : "bg-gray-50 border-gray-100 hover:border-pink-primary/30"
-                        )}
-                      >
-                        <span className="text-4xl">{level.emoji}</span>
-                        <span className="font-medium">{level.label}</span>
-                      </div>
+                      <label key={level.label} className={cn("cursor-pointer rounded-2xl border p-5 transition-all", selected ? "border-signal bg-signal/7 shadow-lg shadow-signal/8" : "border-ink/9 bg-paper hover:border-signal/30")}>
+                        <input type="radio" name="urgency" className="sr-only" value={level.label} checked={selected} onChange={() => setUrgency(level.label)} />
+                        <Icon className={cn("size-6", selected ? "text-signal" : "text-ink/35")} />
+                        <p className="mt-6 font-display text-xl font-bold">{level.label}</p>
+                      </label>
                     );
                   })}
+                </fieldset>
+                <div className="mt-8 flex justify-between"><button type="button" className="button-secondary" onClick={() => setStep(0)}><ArrowLeft className="size-4" /> Back</button><button type="button" className="button-primary" disabled={!urgency} onClick={() => setStep(2)}>Review <ArrowRight className="size-4" /></button></div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div>
+                <h3 className="font-display text-3xl font-bold tracking-[-0.04em]">Ready for dispatch.</h3>
+                <p className="mt-2 text-sm text-ink/48">One last look before absolutely nothing leaves the cloud.</p>
+                <div className="mt-8 rounded-2xl bg-paper p-6">
+                  <p className="mono-label text-violet">Support requested</p>
+                  <ul className="mt-4 space-y-2">{requirements.map((item) => <li key={item} className="flex items-center gap-2 text-sm font-semibold"><Check className="size-4 text-mint" />{item}</li>)}</ul>
+                  <div className="my-6 h-px bg-ink/8" />
+                  <p className="mono-label text-signal">Urgency</p><p className="mt-2 font-display text-2xl font-bold">{urgency}</p>
                 </div>
-                <div className="flex justify-between pt-8">
-                  <button
-                    onClick={() => setStep(0)}
-                    className="flex items-center gap-2 px-6 py-3 text-gray-600 hover:bg-gray-100 rounded-full font-semibold transition-colors"
-                  >
-                    <ChevronLeft size={20} /> Back
-                  </button>
-                  <button
-                    disabled={!selectedUrgency}
-                    onClick={() => setStep(2)}
-                    className="flex items-center gap-2 px-6 py-3 bg-pink-primary text-white rounded-full font-semibold hover:bg-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    Next <ChevronRight size={20} />
-                  </button>
+                <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between"><button type="button" className="button-secondary" onClick={() => setStep(1)}><ArrowLeft className="size-4" /> Back</button><button type="button" className="button-primary bg-signal hover:bg-signal-dark" onClick={deploy}><Send className="size-4" /> Deploy Naeem</button></div>
+              </div>
+            )}
+
+            {step === 3 && (
+              <div className="flex min-h-[25rem] flex-col justify-center">
+                <div className={cn("mx-auto mb-7 grid size-16 place-items-center rounded-2xl", complete ? "bg-mint/12 text-mint" : "bg-violet/10 text-violet")}>{complete ? <CheckCircle2 className="size-8" /> : <LoaderCircle className="size-8 animate-spin" />}</div>
+                <h3 className="text-center font-display text-3xl font-bold tracking-[-0.04em]">{complete ? "Deployment complete." : "Finding Naeem."}</h3>
+                <div className="mx-auto mt-7 w-full max-w-md space-y-2 font-mono text-xs">
+                  {deploymentSteps.map((message, index) => deployIndex >= index && <p key={message} className={cn("flex items-center gap-2 rounded-lg px-3 py-2", index === deploymentSteps.length - 1 && complete ? "bg-mint/10 text-[#138b6b]" : "bg-paper text-ink/54")}><span className="text-violet">›</span>{message}</p>)}
                 </div>
-              </motion.div>
+                {complete && <button type="button" onClick={reset} className="button-secondary mx-auto mt-8">Start another request</button>}
+              </div>
             )}
-
-            {!isDeploying && step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center h-full py-12 space-y-8"
-              >
-                <h3 className="text-3xl font-bold text-center">Ready to launch!</h3>
-                <button
-                  onClick={handleDeploy}
-                  className="px-10 py-6 bg-pink-primary text-white text-2xl font-bold rounded-full shadow-xl hover:bg-pink-600 transition-all duration-300 hover:scale-105 active:scale-95 animate-pulse"
-                >
-                  🚀 DEPLOY NAEEM
-                </button>
-                <button
-                  onClick={() => setStep(1)}
-                  className="text-gray-500 hover:text-gray-800 underline"
-                >
-                  Wait, go back
-                </button>
-              </motion.div>
-            )}
-
-            {isDeploying && (
-              <motion.div
-                key="deploying"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="py-8 font-mono text-sm sm:text-base space-y-4 h-full"
-              >
-                {deploymentSteps.map((msg, index) => (
-                  <AnimatePresence key={index}>
-                    {deployStep >= index && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className={cn(
-                          "flex items-center gap-2",
-                          index === deploymentSteps.length - 1 && deployStep === deploymentSteps.length
-                            ? "text-green-500 font-bold text-lg mt-8"
-                            : "text-gray-700"
-                        )}
-                      >
-                        <span className="text-pink-primary">{">"}</span> {msg}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                ))}
-
-                {deployStep === deploymentSteps.length && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ type: "spring", delay: 0.5 }}
-                    className="mt-8 text-center"
-                  >
-                    <div className="text-6xl mb-4">🎉✨💖🚀</div>
-                    <p className="text-xl font-bold text-gradient-pink">Deployment Successful!</p>
-                  </motion.div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>

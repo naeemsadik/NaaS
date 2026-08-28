@@ -1,72 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ArrowUpRight, CheckCircle2, Orbit } from "lucide-react";
 
 export default function FinalCta() {
-  const [clicked, setClicked] = useState(false);
+  const [requested, setRequested] = useState(false);
 
   return (
-    <section id="cta" className="py-32 px-4 relative overflow-hidden hero-gradient">
-      {/* Floating Emojis */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <motion.div 
-          animate={{ y: [0, -20, 0] }} 
-          transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-          className="absolute top-20 left-[20%] text-4xl"
-        >
-          🩷
-        </motion.div>
-        <motion.div 
-          animate={{ y: [0, 20, 0] }} 
-          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-          className="absolute bottom-20 left-[15%] text-3xl"
-        >
-          ✨
-        </motion.div>
-        <motion.div 
-          animate={{ y: [0, -30, 0] }} 
-          transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
-          className="absolute top-32 right-[20%] text-4xl"
-        >
-          🚀
-        </motion.div>
-      </div>
-
-      <div className="max-w-3xl mx-auto text-center relative z-10 space-y-8">
-        <h2 className="text-4xl md:text-5xl font-bold">
-          Ready to experience Naeem?
-        </h2>
-        <p className="text-lg text-gray-600">
-          No downloads. No installation. No credit card. No API key. Just Naeem.
-        </p>
-        
-        <div className="pt-8 h-24 flex items-center justify-center">
-          <AnimatePresence mode="wait">
-            {!clicked ? (
-              <motion.button
-                key="btn"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setClicked(true)}
-                className="bg-pink-primary text-white font-bold text-xl px-12 py-5 rounded-full glow-pink shadow-xl shadow-pink-primary/30"
-              >
-                🚀 GET NAEEM
-              </motion.button>
+    <section id="cta" className="overflow-hidden border-y-2 border-ink bg-[radial-gradient(circle_at_14%_18%,rgba(255,212,71,0.24),transparent_24%),radial-gradient(circle_at_86%_82%,rgba(115,87,255,0.34),transparent_30%),linear-gradient(135deg,#ff4f9a,#d92d77)] text-white">
+      <div className="site-container relative py-24 text-center sm:py-32">
+        <Orbit className="absolute -left-28 -top-28 size-72 text-white/10" strokeWidth={0.6} aria-hidden="true" />
+        <Orbit className="absolute -bottom-36 -right-28 size-80 text-white/10" strokeWidth={0.6} aria-hidden="true" />
+        <div className="relative mx-auto max-w-4xl">
+          <p className="mono-label text-white/62">No download. No API key. No card.</p>
+          <h2 className="mt-6 font-display text-[clamp(3.7rem,9vw,7.5rem)] font-bold leading-[0.88] tracking-[-0.075em]">Ready when you are.</h2>
+          <p className="mx-auto mt-7 max-w-xl text-lg leading-8 text-white/72">The most useful part of NaaS was already here. You only needed to ask.</p>
+          <div className="mt-10 flex min-h-16 items-center justify-center" aria-live="polite">
+            {!requested ? (
+              <button type="button" className="inline-flex min-h-14 items-center gap-2 rounded-xl border-2 border-ink bg-amber px-7 font-bold text-ink shadow-[0.4rem_0.4rem_0_#140f2d] transition-transform hover:-translate-y-1" onClick={() => setRequested(true)}>Get Naeem <ArrowUpRight className="size-4" /></button>
             ) : (
-              <motion.div
-                key="msg"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-white p-6 rounded-2xl shadow-xl text-pink-primary font-medium text-lg border-2 border-pink-100"
-              >
-                Congratulations. You have successfully done absolutely nothing. Because Naeem was already here. 😂
-              </motion.div>
+              <div className="inline-flex items-center gap-3 rounded-xl bg-white px-6 py-4 font-semibold text-ink shadow-2xl"><CheckCircle2 className="size-5 text-mint" />Naeem was already here.</div>
             )}
-          </AnimatePresence>
+          </div>
         </div>
       </div>
     </section>

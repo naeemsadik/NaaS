@@ -1,62 +1,35 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { User, MapPin, Briefcase, Clock, Activity, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import * as Icons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { naeemProfile } from "@/lib/constants";
 
-export default function MeetInfrastructure() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const icons: Record<string, any> = {
-    department: Briefcase,
-    location: MapPin,
-    experience: Clock,
-    availability: Clock,
-    status: Activity
-  };
+const iconMap = Icons as unknown as Record<string, LucideIcon>;
 
+export default function MeetInfrastructure() {
   return (
-    <section id="team" className="py-20 px-4">
-      <div className="max-w-4xl mx-auto space-y-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-center">Meet the Infrastructure</h2>
-        
-        <motion.div
-          whileHover={{ rotateX: 5, rotateY: -5, scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300 }}
-          className="bg-white rounded-3xl p-8 shadow-xl max-w-md mx-auto border border-gray-100"
-        >
-          <div className="flex flex-col items-center gap-6">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-tr from-pink-primary to-lavender flex items-center justify-center shadow-inner">
-              <User className="w-16 h-16 text-white" />
+    <section id="team" className="section-space dot-field bg-amber">
+      <div className="site-container">
+        <div className="mb-12"><span className="eyebrow">The infrastructure</span><h2 className="section-title">Yes, it is just Naeem.</h2></div>
+        <div className="ticket-shadow grid overflow-hidden rounded-[2rem] bg-white lg:grid-cols-[0.82fr_1.18fr]">
+          <div className="relative min-h-[30rem] overflow-hidden bg-ink sm:min-h-[38rem] lg:min-h-0">
+            <Image src="/img/naeem-infrastructure-v2.png" alt="Naeem at his human infrastructure workstation" fill sizes="(max-width: 1024px) 100vw, 42vw" className="object-cover" style={{ objectPosition: "50% 46%" }} />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink via-ink/62 to-transparent p-7 pt-32 text-white sm:p-9">
+              <p className="font-display text-4xl font-bold tracking-[-0.05em]">Naeem</p>
+              <p className="mt-1 font-mono text-xs uppercase tracking-[0.12em] text-white/54">Chief Naeem Officer</p>
             </div>
-            
-            <div className="text-center">
-              <h3 className="text-2xl font-bold">Naeem</h3>
-              <p className="text-pink-primary font-medium">Chief Naeem Officer</p>
-            </div>
-            
-            <div className="w-full space-y-4">
-              {Object.entries(naeemProfile).map(([key, value]) => {
-                const Icon = icons[key] || Activity;
-                return (
-                  <div key={key} className="flex items-center gap-4 bg-gray-50 p-3 rounded-xl">
-                    <Icon className="w-5 h-5 text-gray-400" />
-                    <div className="flex-1">
-                      <p className="text-xs text-gray-500 capitalize">{key}</p>
-                      <p className="text-sm font-medium">{value as string}</p>
-                    </div>
-                  </div>
-                );
+          </div>
+          <div className="p-6 sm:p-9 lg:p-12">
+            <p className="max-w-xl font-display text-3xl font-semibold leading-tight tracking-[-0.04em]">A single point of contact with an unusually broad job description.</p>
+            <div className="mt-9 grid gap-3 sm:grid-cols-2">
+              {naeemProfile.map((item) => {
+                const Icon = iconMap[item.icon];
+                return <div key={item.label} className="rounded-xl border border-ink/8 bg-paper p-4"><Icon className="size-4 text-violet" /><p className="mono-label mt-5 text-ink/34">{item.label}</p><p className="mt-1 text-sm font-semibold leading-5">{item.value}</p></div>;
               })}
             </div>
-            
-            <a 
-              href="#deploy"
-              className="mt-4 w-full flex items-center justify-center gap-2 py-3 px-6 rounded-full border-2 border-pink-primary text-pink-primary font-bold hover:bg-pink-primary hover:text-white transition-colors"
-            >
-              View Naeem's Résumé <ArrowRight className="w-4 h-4" />
-            </a>
+            <a href="#deploy" className="button-primary mt-8">Request this infrastructure <ArrowUpRight className="size-4" /></a>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

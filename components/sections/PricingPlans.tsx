@@ -1,95 +1,48 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { pricingPlans, girlPlanPerks } from "@/lib/constants";
-import { Check } from "lucide-react";
+import * as Icons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Check, HeartHandshake } from "lucide-react";
+import { girlPlanPerks, pricingPlans } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+
+const iconMap = Icons as unknown as Record<string, LucideIcon>;
+const planAccents = ["before:bg-mint", "before:bg-cyan", "before:bg-violet", "before:bg-signal"];
 
 export default function PricingPlans() {
   return (
-    <section id="pricing" className="py-24 px-4 bg-cream">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">Choose Your Plan</h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {pricingPlans.map((plan, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className={cn(
-                "bg-white rounded-2xl p-6 shadow-md hover:-translate-y-1 transition-transform relative flex flex-col",
-                plan.highlighted && "ring-2 ring-pink-primary shadow-pink-primary/20 glow-pink"
-              )}
-            >
-              {plan.highlighted && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-pink-primary text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">
-                  MOST POPULAR
-                </div>
-              )}
-              <div className="text-4xl mb-4">{plan.emoji}</div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-              <div className="text-3xl font-bold text-gray-900 mb-4">{plan.price}</div>
-              <p className="text-sm text-gray-500 mb-6 flex-grow">{plan.description}</p>
-              
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feat: string, fIdx: number) => (
-                  <li key={fIdx} className="flex items-start gap-2 text-sm text-gray-700">
-                    <Check className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
-                    <span>{feat}</span>
-                  </li>
-                ))}
-              </ul>
-              
-              <button className={cn(
-                "w-full py-3 rounded-xl font-bold transition-colors",
-                plan.highlighted 
-                  ? "bg-pink-primary text-white hover:bg-pink-dark" 
-                  : "bg-gray-100 text-gray-900 hover:bg-gray-200"
-              )}>
-                Get Started
-              </button>
-            </motion.div>
-          ))}
+    <section id="pricing" className="section-space dot-field bg-amber">
+      <div className="site-container">
+        <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div><span className="eyebrow">Plans</span><h2 className="section-title">Priced like friendship.</h2></div>
+          <p className="section-copy md:max-w-md">Choose the operational intensity. Every tier costs exactly what a good conversation should.</p>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="w-full bg-gradient-to-r from-pink-primary/10 to-lavender/10 rounded-3xl p-8 border border-pink-primary/20 shadow-lg relative mt-20"
-        >
-          <div className="absolute -top-12 -right-4 md:right-12 bg-white px-5 py-4 rounded-3xl rounded-br-none shadow-xl border border-gray-100 transform rotate-2 z-10">
-            <p className="text-sm font-bold text-pink-primary">Wait. Why is everything free?</p>
-            <div className="absolute -bottom-3 right-0 w-6 h-6 bg-white border-b border-r border-gray-100 transform rotate-45"></div>
-          </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {pricingPlans.map((plan, index) => {
+            const Icon = iconMap[plan.icon];
+            return (
+              <article key={plan.name} className={cn("ticket-shadow relative flex min-h-[28rem] flex-col overflow-hidden rounded-[1.6rem] p-6 before:absolute before:inset-x-0 before:top-0 before:h-3", planAccents[index], plan.highlighted ? "bg-ink text-white" : "bg-white")}>
+                {plan.highlighted && <span className="mono-label absolute right-4 top-4 rounded-full bg-signal px-3 py-1.5 text-[0.6rem] text-white">Best signal</span>}
+                <span className={cn("mb-8 grid size-11 place-items-center rounded-xl", plan.highlighted ? "bg-white/10 text-violet-soft" : "bg-violet/9 text-violet")}><Icon className="size-5" /></span>
+                <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{plan.name}</h3>
+                <p className={cn("mt-2 min-h-12 text-sm leading-6", plan.highlighted ? "text-white/52" : "text-ink/48")}>{plan.description}</p>
+                <p className="mt-7 font-display text-4xl font-bold tracking-[-0.05em]">{plan.price}</p>
+                <ul className="mt-7 flex-1 space-y-3">
+                  {plan.features.map((feature) => <li key={feature} className={cn("flex items-start gap-2.5 text-sm", plan.highlighted ? "text-white/72" : "text-ink/62")}><Check className="mt-0.5 size-4 shrink-0 text-mint" />{feature}</li>)}
+                </ul>
+                <a href="#deploy" className={cn("mt-8 flex min-h-11 items-center justify-center rounded-xl text-sm font-bold transition-colors", plan.highlighted ? "bg-white text-ink hover:bg-violet-soft" : "bg-ink text-white hover:bg-violet")}>Choose plan</a>
+              </article>
+            );
+          })}
+        </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="flex-1">
-              <h3 className="text-3xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                <span>👸</span> Girl Plan
-              </h3>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {girlPlanPerks.map((perk, idx) => (
-                  <li key={idx} className="flex items-center gap-2 text-gray-700 font-medium">
-                    <span className="text-pink-primary text-xl">♥</span> {perk}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="w-full md:w-auto mt-6 md:mt-0">
-              <button className="w-full md:w-auto bg-pink-primary text-white rounded-full px-10 py-4 text-xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all whitespace-nowrap">
-                💗 Subscribe
-              </button>
-            </div>
+        <div className="ticket-shadow mt-8 grid overflow-hidden rounded-[1.75rem] bg-signal text-white lg:grid-cols-[0.7fr_1.3fr]">
+          <div className="flex flex-col justify-between border-b-2 border-dashed border-white/35 p-7 lg:border-b-0 lg:border-r-2 sm:p-9">
+            <HeartHandshake className="size-8 text-amber" />
+            <div className="mt-12"><p className="mono-label text-amber">The girl plan</p><p className="mt-2 font-display text-4xl font-bold tracking-[-0.05em]">৳0 forever.</p><p className="mt-3 text-sm leading-6 text-white/66">No trial ending. No card waiting to be charged.</p></div>
           </div>
-        </motion.div>
-
-        <p className="text-center text-xs text-gray-400 mt-8 italic">
-          * Subject to Naeem's battery, sleep schedule, food availability, and general nonsense.
-        </p>
+          <div className="grid gap-3 p-7 sm:grid-cols-2 sm:p-9">{girlPlanPerks.map((perk) => <div key={perk} className="flex items-center gap-3 rounded-xl border-2 border-ink bg-white px-4 py-3 text-sm font-semibold text-ink shadow-[0.22rem_0.22rem_0_#140f2d]"><Check className="size-4 text-signal" />{perk}</div>)}</div>
+        </div>
+        <p className="mt-5 text-center font-mono text-[0.66rem] uppercase tracking-[0.1em] text-ink/34">Availability depends on battery, food, sleep, and nonsense.</p>
       </div>
     </section>
   );

@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Copy, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useRef, useState } from "react";
+import { Check, Copy } from "lucide-react";
 
 interface CodeBlockProps {
   children: React.ReactNode;
@@ -12,41 +11,27 @@ interface CodeBlockProps {
 
 export default function CodeBlock({ children, language = "bash", showCopy = true }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLElement>(null);
 
-  const handleCopy = () => {
-    if (contentRef.current) {
-      navigator.clipboard.writeText(contentRef.current.textContent || "");
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
+  async function handleCopy() {
+    await navigator.clipboard.writeText(contentRef.current?.textContent ?? "");
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1600);
+  }
 
   return (
-    <div className="bg-dark-card rounded-2xl overflow-hidden shadow-lg border border-white/10 my-6">
-      <div className="flex items-center justify-between px-4 py-3 bg-dark-card-lighter/50 border-b border-white/5">
-        <div className="flex gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500" />
-          <div className="w-3 h-3 rounded-full bg-green-500" />
-        </div>
+    <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#11101d] shadow-2xl shadow-black/16">
+      <div className="flex items-center justify-between border-b border-white/8 px-4 py-3">
+        <span className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.14em] text-white/38">{language}</span>
         {showCopy && (
-          <button
-            onClick={handleCopy}
-            className="text-white/50 hover:text-white transition-colors"
-            aria-label="Copy code"
-          >
-            {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+          <button type="button" onClick={handleCopy} className="grid size-8 place-items-center rounded-lg text-white/46 transition-colors hover:bg-white/8 hover:text-white" aria-label="Copy code">
+            {copied ? <Check className="size-4 text-mint" /> : <Copy className="size-4" />}
           </button>
         )}
       </div>
-      <div className="p-6 overflow-x-auto">
-        <pre className="font-mono text-sm text-gray-300">
-          <code ref={contentRef} className={`language-${language}`}>
-            {children}
-          </code>
-        </pre>
-      </div>
+      <pre className="overflow-x-auto p-5 text-[0.78rem] leading-7 text-white/78 sm:p-6 sm:text-sm">
+        <code ref={contentRef} className={`language-${language}`}>{children}</code>
+      </pre>
     </div>
   );
 }

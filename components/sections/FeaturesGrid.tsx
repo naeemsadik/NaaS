@@ -1,41 +1,25 @@
-"use client";
-
-import { motion } from "framer-motion";
+import * as Icons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { features } from "@/lib/constants";
-import { Brain, Laugh, Soup, Wifi, Heart, LucideIcon, Sparkles } from "lucide-react";
 
-const iconMap: Record<string, LucideIcon> = {
-  Brain,
-  Laugh,
-  Soup,
-  Wifi,
-  Heart,
-};
+const iconMap = Icons as unknown as Record<string, LucideIcon>;
+const cardTones = ["bg-signal text-white", "bg-violet text-white", "bg-amber text-ink", "bg-cyan text-ink", "bg-ink text-white"];
 
 export default function FeaturesGrid() {
   return (
-    <section id="features" className="py-24 px-4 bg-gray-50">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">Features</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, idx) => {
-            const Icon = iconMap[feature.icon] || Sparkles;
+    <section id="features" className="section-space dot-field bg-[#ffe3ef]">
+      <div className="site-container">
+        <div className="mb-12 max-w-3xl"><span className="eyebrow">Capabilities</span><h2 className="section-title">Built around what people actually need.</h2></div>
+        <div className="grid gap-4 md:grid-cols-6">
+          {features.map((feature, index) => {
+            const Icon = iconMap[feature.icon];
+            const spans = index < 2 ? "md:col-span-3" : "md:col-span-2";
             return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="bg-white rounded-2xl p-8 shadow-md card-hover transition-all"
-              >
-                <div className="w-14 h-14 rounded-full bg-pink-primary/10 flex items-center justify-center mb-6">
-                  <Icon className="w-7 h-7 text-pink-primary" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </motion.div>
+              <article key={feature.title} className={`ticket-shadow group min-h-64 rounded-[1.75rem] p-7 transition-transform hover:-translate-y-1 ${cardTones[index]} ${spans}`}>
+                <span className="mb-12 grid size-12 place-items-center rounded-2xl border-2 border-ink bg-white text-ink shadow-[0.22rem_0.22rem_0_#140f2d]"><Icon className="size-5" /></span>
+                <h3 className="font-display text-2xl font-bold tracking-[-0.04em]">{feature.title}</h3>
+                <p className={`mt-3 max-w-md text-sm leading-6 ${index === 2 || index === 3 ? "text-ink/62" : "text-white/68"}`}>{feature.description}</p>
+              </article>
             );
           })}
         </div>

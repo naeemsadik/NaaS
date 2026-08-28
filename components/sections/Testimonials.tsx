@@ -1,62 +1,25 @@
-"use client";
-
-import { motion } from "framer-motion";
+import { BadgeCheck, MessageCircle, Star } from "lucide-react";
 import { testimonials } from "@/lib/constants";
-import { MessageCircle } from "lucide-react";
+
+const cardStyles = ["-rotate-1 bg-white", "rotate-1 bg-cyan", "rotate-1 bg-amber", "-rotate-1 bg-white"];
 
 export default function Testimonials() {
-  const renderStars = (count: number) => {
-    return Array(count).fill("⭐").join("");
-  };
-
   return (
-    <section id="testimonials" className="py-24 px-4 bg-lavender-light/20">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-16">What People Are Saying</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {testimonials.map((t: any, index: number) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.15 }}
-              className="bg-white rounded-2xl p-6 sm:p-8 shadow-md border border-gray-100 flex flex-col h-full hover:shadow-lg transition-shadow"
-            >
-              <div className="mb-4 text-sm">{renderStars(t.stars)}</div>
-              <p className="italic text-gray-700 text-lg mb-6 flex-grow">
-                "{t.quote}"
-              </p>
-              
-              <div className="flex items-center gap-3 mt-auto">
-                <div className="w-10 h-10 bg-gradient-to-br from-pink-200 to-lavender rounded-full flex items-center justify-center font-bold text-gray-700 shrink-0">
-                  {t.author.charAt(0)}
-                </div>
-                <div>
-                  <div className="font-semibold flex items-center gap-2 text-gray-900 flex-wrap">
-                    {t.author}
-                    {t.badge && (
-                      <span className="px-2 py-0.5 bg-pink-primary/10 text-pink-primary text-xs rounded-full font-medium whitespace-nowrap">
-                        {t.badge}
-                      </span>
-                    )}
-                  </div>
-                </div>
+    <section id="testimonials" className="section-space dot-field bg-violet-soft">
+      <div className="site-container">
+        <div className="mb-12 max-w-3xl"><span className="eyebrow">Field reports</span><h2 className="section-title">Reviews from production.</h2></div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {testimonials.map((testimonial, index) => (
+            <article key={testimonial.author + testimonial.quote} className={`panel flex min-h-72 flex-col p-7 sm:p-8 ${cardStyles[index]} ${index === 0 ? "md:translate-y-8" : ""}`}>
+              <div className="flex gap-1" aria-label={`${testimonial.stars} out of 5 stars`}>
+                {Array.from({ length: 5 }, (_, star) => <Star key={star} className={`size-4 ${star < testimonial.stars ? "fill-amber text-amber" : "text-ink/12"}`} />)}
               </div>
-
-              {t.response && (
-                <div className="mt-6 p-4 bg-pink-primary/5 rounded-xl border border-pink-primary/10 relative">
-                  <div className="absolute -top-3 left-6 text-pink-primary/40 bg-white p-0.5 rounded-full">
-                    <MessageCircle size={20} fill="currentColor" />
-                  </div>
-                  <p className="italic text-sm text-gray-800">
-                    <span className="font-semibold text-pink-primary not-italic mr-2">Naeem:</span>
-                    {t.response}
-                  </p>
-                </div>
-              )}
-            </motion.div>
+              <blockquote className="mt-8 flex-1 font-display text-2xl font-semibold leading-tight tracking-[-0.035em]">“{testimonial.quote}”</blockquote>
+              <div className="mt-8 flex items-center justify-between gap-4 border-t border-ink/8 pt-5">
+                <div><p className="font-semibold">{testimonial.author}</p>{testimonial.badge && <p className="mt-1 flex items-center gap-1 text-xs font-semibold text-violet"><BadgeCheck className="size-3.5" />{testimonial.badge}</p>}</div>
+                {testimonial.response && <div className="flex items-center gap-2 rounded-lg bg-signal/8 px-3 py-2 text-xs font-semibold text-signal"><MessageCircle className="size-3.5" />{testimonial.response}</div>}
+              </div>
+            </article>
           ))}
         </div>
       </div>

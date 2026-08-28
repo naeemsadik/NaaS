@@ -1,133 +1,60 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, CheckCircle2, RotateCcw } from "lucide-react";
 import { quizQuestions } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-import { ChevronRight, RotateCcw } from "lucide-react";
 
 export default function CompatibilityQuiz() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [showResult, setShowResult] = useState(false);
-  const [counter, setCounter] = useState(0);
+  const [question, setQuestion] = useState(0);
+  const [answers, setAnswers] = useState<string[]>([]);
+  const [finished, setFinished] = useState(false);
+  const selected = answers[question];
 
-  const handleSelect = (option: string) => {
-    setAnswers({ ...answers, [currentQuestion]: option });
-  };
+  function select(option: string) {
+    setAnswers((current) => current.map((answer, index) => index === question ? option : answer).concat(current.length === question ? [option] : []));
+  }
 
-  const handleNext = () => {
-    if (currentQuestion < quizQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      setShowResult(true);
+  function next() {
+    if (question < quizQuestions.length - 1) setQuestion((value) => value + 1);
+    else setFinished(true);
+  }
 
-      const end = 97;
-      const duration = 2000;
-      let startTime: number | null = null;
-
-      const updateCounter = (time: number) => {
-        if (!startTime) startTime = time;
-        const elapsed = time - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-        setCounter(Math.floor(easeOutQuart * end));
-
-        if (progress < 1) {
-          requestAnimationFrame(updateCounter);
-        }
-      };
-
-      requestAnimationFrame(updateCounter);
-    }
-  };
-
-  const handleReset = () => {
-    setCurrentQuestion(0);
-    setAnswers({});
-    setShowResult(false);
-    setCounter(0);
-  };
+  function reset() {
+    setQuestion(0);
+    setAnswers([]);
+    setFinished(false);
+  }
 
   return (
-    <section id="quiz" className="py-20 px-4">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">NaaS Compatibility Quiz</h2>
-          <p className="text-gray-600 text-lg">Are you qualified to deploy Naeem? Let&apos;s find out.</p>
-        </div>
-
-        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl min-h-[400px] flex flex-col justify-center overflow-hidden">
-          <AnimatePresence mode="wait">
-            {!showResult ? (
-              <motion.div
-                key={currentQuestion}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                className="w-full"
-              >
-                <div className="mb-8">
-                  <span className="text-pink-primary font-semibold text-sm uppercase tracking-wider">
-                    Question {currentQuestion + 1} of {quizQuestions.length}
-                  </span>
-                  <h3 className="text-2xl font-bold mt-2">{quizQuestions[currentQuestion].question}</h3>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                  {quizQuestions[currentQuestion].options.map((option) => {
-                    const isSelected = answers[currentQuestion] === option;
-                    return (
-                      <button
-                        key={option}
-                        onClick={() => handleSelect(option)}
-                        className={cn(
-                          "p-4 rounded-xl text-left border-2 transition-all duration-200",
-                          isSelected
-                            ? "bg-pink-primary/10 border-pink-primary ring-1 ring-pink-primary"
-                            : "bg-gray-50 border-gray-100 hover:border-pink-primary/40 hover:bg-pink-50/50"
-                        )}
-                      >
-                        {option}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="flex justify-end">
-                  <button
-                    disabled={!answers[currentQuestion]}
-                    onClick={handleNext}
-                    className="flex items-center gap-2 px-8 py-3 bg-dark-card text-white rounded-full font-semibold hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {currentQuestion === quizQuestions.length - 1 ? "Get Results" : "Next"} <ChevronRight size={20} />
-                  </button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="result"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-10"
-              >
-                <div className="text-7xl sm:text-9xl font-bold text-gradient-pink mb-6">
-                  {counter}%
-                </div>
-                <h3 className="text-2xl font-bold mb-4">
-                  Congratulations. You are statistically qualified to request Naeem.
-                </h3>
-                <div className="text-4xl mb-8 animate-bounce">🎉🩷✨</div>
-
-                <button
-                  onClick={handleReset}
-                  className="inline-flex items-center gap-2 text-gray-500 hover:text-pink-primary font-medium transition-colors"
-                >
-                  <RotateCcw size={18} /> Retake Quiz
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+    <section id="quiz" className="section-space dot-field bg-[#ffd9e9]">
+      <div className="site-container grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-center">
+        <div><span className="eyebrow">Compatibility lab</span><h2 className="section-title">Should you request Naeem?</h2><p className="section-copy mt-6">Three scientifically unserious questions. One extremely confident result.</p></div>
+        <div className="panel min-h-[30rem] overflow-hidden p-6 sm:p-9">
+          {!finished ? (
+            <>
+              <div className="mb-8 flex items-center justify-between"><span className="mono-label text-violet">Question {question + 1} of {quizQuestions.length}</span><div className="flex gap-1">{quizQuestions.map((_, index) => <span key={index} className={cn("h-1.5 w-8 rounded-full", index <= question ? "bg-violet" : "bg-ink/8")} />)}</div></div>
+              <h3 className="max-w-xl font-display text-3xl font-bold leading-tight tracking-[-0.045em]">{quizQuestions[question].question}</h3>
+              <fieldset className="mt-8 grid gap-3 sm:grid-cols-2">
+                <legend className="sr-only">Choose an answer</legend>
+                {quizQuestions[question].options.map((option, index) => (
+                  <label key={option} className={cn("flex min-h-20 cursor-pointer items-center gap-3 rounded-xl border p-4 text-sm font-semibold transition-colors", selected === option ? "border-violet bg-violet/7" : "border-ink/8 bg-paper hover:border-violet/30")}>
+                    <input className="sr-only" type="radio" name={`question-${question}`} value={option} checked={selected === option} onChange={() => select(option)} />
+                    <span className={cn("grid size-7 shrink-0 place-items-center rounded-lg font-mono text-xs", selected === option ? "bg-violet text-white" : "bg-white text-ink/38")}>{String.fromCharCode(65 + index)}</span>{option}
+                  </label>
+                ))}
+              </fieldset>
+              <div className="mt-8 flex justify-end"><button type="button" className="button-primary" disabled={!selected} onClick={next}>{question === quizQuestions.length - 1 ? "Show result" : "Next question"}<ArrowRight className="size-4" /></button></div>
+            </>
+          ) : (
+            <div className="flex min-h-[25rem] flex-col items-center justify-center text-center">
+              <CheckCircle2 className="size-12 text-mint" />
+              <p className="mt-7 font-display text-[clamp(5rem,12vw,8rem)] font-bold leading-none tracking-[-0.08em] text-violet">97%</p>
+              <h3 className="mt-5 max-w-md font-display text-2xl font-bold tracking-[-0.04em]">Statistically qualified to request Naeem.</h3>
+              <p className="mt-3 max-w-md text-sm leading-6 text-ink/48">The remaining three percent is reserved for snacks and reasonable doubt.</p>
+              <button type="button" className="button-secondary mt-7" onClick={reset}><RotateCcw className="size-4" /> Retake quiz</button>
+            </div>
+          )}
         </div>
       </div>
     </section>

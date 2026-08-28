@@ -1,37 +1,27 @@
-"use client";
-
-import { motion } from "framer-motion";
+import { BatteryCharging, Gauge, RefreshCw } from "lucide-react";
 import { personalityBars } from "@/lib/constants";
 import ProgressBar from "@/components/ui/ProgressBar";
 
 export default function PersonalityDashboard() {
   return (
-    <section id="dashboard" className="py-20 px-4">
-      <div className="max-w-2xl mx-auto">
-        <h2 className="text-4xl font-bold text-center mb-4 text-gradient-pink">Naeem Personality Dashboard</h2>
-        <p className="text-center text-gray-600 mb-10">Real-time monitoring of critical Naeem metrics.</p>
-        
-        <div className="bg-white rounded-2xl p-8 shadow-lg">
-          <div className="space-y-6">
-            {personalityBars.map((bar, index) => (
-              <motion.div
-                key={bar.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <div className="flex justify-between mb-2">
-                  <span className="font-medium text-gray-800">{bar.label}</span>
-                  <span className="text-gray-500">{bar.value}%</span>
-                </div>
-                <ProgressBar label={bar.label} value={bar.value} color={bar.color || "bg-pink-primary"} />
-              </motion.div>
-            ))}
+    <section id="dashboard" className="section-space dot-field bg-cyan">
+      <div className="site-container grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
+        <div>
+          <span className="eyebrow">Telemetry</span>
+          <h2 className="section-title">The human dashboard.</h2>
+          <p className="section-copy mt-6">A live-ish reading of Naeem’s most business-critical systems. Accuracy improves after food.</p>
+          <div className="mt-8 grid grid-cols-2 gap-3">
+            <div className="ticket-shadow -rotate-2 rounded-2xl bg-violet p-5 text-white"><BatteryCharging className="size-5 text-violet-soft" /><p className="mt-7 font-display text-3xl font-bold">61%</p><p className="mt-1 text-xs text-white/55">Social battery</p></div>
+            <div className="ticket-shadow rotate-2 rounded-2xl bg-signal p-5 text-white"><Gauge className="size-5 text-white/78" /><p className="mt-7 font-display text-3xl font-bold">94%</p><p className="mt-1 text-xs text-white/55">Food urgency</p></div>
           </div>
-          <p className="text-xs text-center text-gray-400 mt-8 italic">
-            * Data updated every time Naeem has a snack.
-          </p>
+        </div>
+        <div className="panel p-6 sm:p-9">
+          <div className="mb-8 flex items-center justify-between border-b border-ink/8 pb-5">
+            <div><p className="mono-label text-ink/34">naeem_core.metrics</p><h3 className="mt-2 font-display text-2xl font-bold">Personality monitor</h3></div>
+            <span className="grid size-10 place-items-center rounded-xl bg-mint/12 text-mint"><RefreshCw className="size-4" /></span>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2">{personalityBars.map((bar) => <ProgressBar key={bar.label} {...bar} />)}</div>
+          <p className="mt-8 border-t border-ink/8 pt-5 font-mono text-[0.65rem] uppercase tracking-[0.1em] text-ink/32">Last recalibrated after one snack</p>
         </div>
       </div>
     </section>

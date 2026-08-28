@@ -1,95 +1,65 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { ArrowUpRight, Menu, Orbit, X } from "lucide-react";
 import { navLinks } from "@/lib/constants";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 transition-shadow duration-300 backdrop-blur-lg bg-white/80 border-b border-pink-light/30",
-        scrolled && "shadow-sm"
-      )}
-    >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="font-bold text-2xl text-gradient-pink">NaaS</span>
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-ink/92 text-white backdrop-blur-xl">
+      <div className="site-container flex h-[4.5rem] items-center justify-between">
+        <Link href="#hero" className="group flex items-center gap-2.5" aria-label="NaaS home">
+          <span className="grid size-9 place-items-center rounded-xl border-2 border-white bg-signal text-white shadow-[0.22rem_0.22rem_0_#45d7eb] transition-transform group-hover:-rotate-6">
+            <Orbit className="size-5" aria-hidden="true" />
+          </span>
+          <span className="font-display text-xl font-bold tracking-[-0.05em]">NaaS</span>
+          <span className="hidden font-mono text-[0.62rem] font-semibold uppercase tracking-[0.13em] text-white/42 sm:inline">Human infrastructure</span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary navigation">
           {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              className="text-sm font-medium text-gray-700 hover:text-pink-primary transition-colors"
-            >
+            <Link key={link.label} href={link.href} className="text-sm font-semibold text-white/58 transition-colors hover:text-white">
               {link.label}
             </Link>
           ))}
-          <Link
-            href="#deploy"
-            className="px-4 py-2 rounded-full bg-pink-primary text-white text-sm font-semibold hover:bg-pink-primary/90 transition-colors shadow-sm"
-          >
-            Deploy Naeem
-          </Link>
         </nav>
 
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden p-2 text-gray-600"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-2">
+          <Link href="#deploy" className="button-primary hidden min-h-10 border-white bg-amber px-4 text-sm text-ink shadow-[0.25rem_0.25rem_0_#ff4f9a] hover:bg-white hover:text-ink sm:inline-flex">
+            Deploy Naeem
+            <ArrowUpRight className="size-4" aria-hidden="true" />
+          </Link>
+          <button
+            type="button"
+            className="grid size-10 place-items-center rounded-xl border border-white/20 bg-white/8 text-white lg:hidden"
+            onClick={() => setIsOpen((open) => !open)}
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
+            aria-label={isOpen ? "Close navigation" : "Open navigation"}
+          >
+            {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Nav */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="md:hidden overflow-hidden bg-white/95 backdrop-blur-md border-b border-pink-light/30"
-          >
-            <nav className="flex flex-col items-center py-4 gap-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="text-gray-700 font-medium hover:text-pink-primary"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                href="#deploy"
-                className="px-6 py-2 mt-2 rounded-full bg-pink-primary text-white font-semibold shadow-sm"
-                onClick={() => setIsOpen(false)}
-              >
-                Deploy Naeem
+      {isOpen && (
+        <nav id="mobile-menu" className="border-t border-white/10 bg-ink px-4 py-4 lg:hidden" aria-label="Mobile navigation">
+          <div className="site-container grid gap-1">
+            {navLinks.map((link) => (
+              <Link key={link.label} href={link.href} className="rounded-xl px-3 py-3 font-semibold text-white/72 hover:bg-white/8 hover:text-white" onClick={() => setIsOpen(false)}>
+                {link.label}
               </Link>
-            </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ))}
+            <Link href="#deploy" className="button-primary mt-2 border-white bg-signal sm:hidden" onClick={() => setIsOpen(false)}>
+              Deploy Naeem
+              <ArrowUpRight className="size-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
